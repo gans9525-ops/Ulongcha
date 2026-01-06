@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HPLC 시스템 트러블슈팅 가이드</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
+            line-height: 1.8;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 22px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .content {
+            padding: 60px 50px;
+        }
+
+        .toc {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 50px;
+            border-left: 6px solid #667eea;
+        }
+
+        .toc h2 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 25px;
+        }
+
+        .toc ul {
+            list-style: none;
+        }
+
+        .toc li {
+            padding: 12px 0;
+            font-size: 18px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .toc li:last-child {
+            border-bottom: none;
+        }
+
+        .toc a {
+            color: #2d3748;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .toc a:hover {
+            color: #667eea;
+            padding-left: 10px;
+        }
+
+        .toc .icon {
+            font-size: 24px;
+            margin-right: 15px;
+            width: 30px;
+        }
+
+        .section {
+            margin-bottom: 70px;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .section-header .desc {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .subsection {
+            margin-bottom: 40px;
+        }
+
+        .subsection-title {
+            color: #667eea;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+            border-left: 5px solid #4299e1;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .info-box h3 {
+            color: #2c5282;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .info-box p {
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            border-left: 5px solid #fc8181;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .warning-box h3 {
+            color: #c53030;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .warning-box p {
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border-left: 5px solid #48bb78;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .success-box h3 {
+            color: #22543d;
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .analogy-box {
+            background: linear-gradient(135deg, #fffaf0 0%, #feebc8 100%);
+            border-left: 5px solid #ed8936;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+            font-style: italic;
+        }
+
+        .analogy-box .icon {
+            font-size: 32px;
+            margin-right: 15px;
+        }
+
+        .analogy-box strong {
+            font-size: 20px;
+            color: #7c2d12;
+            font-style: normal;
+        }
+
+        .check-list {
+            margin: 20px 0;
+        }
+
+        .check-item {
+            background: #f7fafc;
+            padding: 20px 25px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .check-item h4 {
+            color: #2d3748;
+            font-size: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .check-item h4::before {
+            content: "✓";
+            display: inline-block;
+            width: 26px;
+            height: 26px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 26px;
+            margin-right: 12px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .check-item p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #4a5568;
+            margin-left: 38px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #ffd700 0%, #ffed4e 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .spec-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .spec-table th {
+            padding: 18px;
+            text-align: left;
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .spec-table td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 16px;
+        }
+
+        .spec-table tr:hover {
+            background: #f7fafc;
+        }
+
+        .spec-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin: 25px 0;
+        }
+
+        .column {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .column h4 {
+            color: #667eea;
+            font-size: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .column ul {
+            margin-left: 20px;
+        }
+
+        .column li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+            font-size: 16px;
+            color: #4a5568;
+        }
+
+        .action-steps {
+            background: linear-gradient(135deg, #fef5e7 0%, #fad7a0 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 6px solid #f39c12;
+        }
+
+        .action-steps h3 {
+            color: #d68910;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .action-steps ol {
+            margin-left: 25px;
+        }
+
+        .action-steps li {
+            font-size: 17px;
+            line-height: 2;
+            margin-bottom: 10px;
+            color: #2d3748;
+        }
+
+        .action-steps strong {
+            color: #c53030;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .card .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .card h4 {
+            color: #667eea;
+            font-size: 22px;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .footer p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 40px 25px;
+            }
+
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .two-column,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header h2 {
+                font-size: 28px;
+            }
+
+            .subsection-title {
+                font-size: 24px;
+            }
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 HPLC 시스템 트러블슈팅 가이드</h1>
+            <p class="subtitle">Agilent 1260 Infinity II 시스템</p>
+            <p class="subtitle" style="margin-top: 15px; font-size: 20px;">Area RSD, RT RSD, 분리도(Rs) 문제 해결</p>
+        </div>
+
+        <div class="content">
+            <!-- 목차 -->
+            <div class="toc" id="toc">
+                <h2>📋 목차</h2>
+                <ul>
+                    <li>
+                        <a href="#area-rsd">
+                            <span class="icon">📉</span>
+                            <span>1. Area RSD 불량 - 면적 재현성 문제</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#baseline">
+                            <span class="icon">📈</span>
+                            <span>2. 베이스라인 흔들림 - 신호 대 잡음비(S/N) 개선</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#rt-rsd">
+                            <span class="icon">⏱️</span>
+                            <span>3. RT RSD 불량 - 리텐션 타임 재현성 문제</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#resolution">
+                            <span class="icon">📊</span>
+                            <span>4. 분리도(Rs) 부족 - 피크 분리 성능 개선</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Section 1: Area RSD -->
+            <div class="section" id="area-rsd">
+                <div class="section-header">
+                    <h2>📉 1. Area RSD 불량</h2>
+                    <p class="desc">면적 재현성 문제의 원인과 해결방안</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🎯 문제 정의</h3>
+                    <p>Area RSD(면적 재현성)가 좋지 않은 이유는 <span class="highlight">주입 부피의 한계, 하드웨어 소모품의 마모, 기포 발생, 그리고 분석법 설정(Draw Speed 등)</span>이 복합적으로 작용하기 때문입니다.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">1.1 주입 부피에 따른 기계적 정밀도 한계</h3>
+                    
+                    <p style="font-size: 17px; margin-bottom: 20px;">먼저 분석하고 계신 <strong>주입 부피(Injection Volume)</strong>가 기기의 사양 범위 내에 있는지 확인해야 합니다.</p>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>주입 부피 범위</th>
+                                <th>RSD 사양</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>5 ~ 100 µL</strong></td>
+                                <td><span class="highlight">< 0.25%</span></td>
+                                <td>최적 정밀도 구간</td>
+                            </tr>
+                            <tr>
+                                <td><strong>1 ~ 5 µL</strong></td>
+                                <td><strong>< 1.0%</strong></td>
+                                <td>정밀도 사양 저하</td>
+                            </tr>
+                            <tr>
+                                <td><strong>0.5 ~ 1 µL</strong></td>
+                                <td><strong style="color: #c53030;">< 1.5%</strong></td>
+                                <td>⚠️ 매우 낮은 정밀도</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="warning-box">
+                        <h3>⚠️ 중요 포인트</h3>
+                        <p>G1329B/G1367E 모델의 경우, 5~100µL 주입 시 RSD는 0.25% 미만이지만, <strong>1~5µL의 소량 주입 시에는 RSD가 1% 미만으로 정밀도 사양이 낮아집니다</strong>. 매우 낮은 부피(0.5~1µL) 주입 시에는 RSD가 1.5%까지 높아질 수 있으므로, 면적이 낮은 검체라면 주입량 자체가 너무 적은 것은 아닌지 검토가 필요합니다.</p>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">1.2 하드웨어 소모품 및 마모 상태 점검</h3>
+                    
+                    <p style="font-size: 17px; margin-bottom: 20px;">면적 재현성 불량 시 가장 먼저 교체나 점검을 고려해야 할 부품들입니다.</p>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>미터링 씰 및 피스톤 (Metering Seal & Piston)</h4>
+                            <p>오토샘플러의 미터링 씰이 마모되거나 피스톤에 <strong>미세한 흠집(Scratches)</strong>이 있으면 미세 리크가 발생하여 주입량이 들쭉날쭉해집니다. 특히 소량 주입 시 피스톤 상태는 재현성에 치명적입니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>로터 씰 (Rotor Seal)</h4>
+                            <p>인젝션 밸브의 로터 씰이 마모되면 포트 간의 미세한 누액이나 교차 오염이 발생하여 Area 값이 흔들립니다. <span class="highlight">보통 30,000회 주입마다 교체를 권장</span>합니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>니들 및 니들 시트 (Needle & Seat)</h4>
+                            <p>니들 끝이 휘거나 시트와의 밀착이 불완전하면 주입 시마다 압력이 새어나가 RSD가 나빠집니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">1.3 미세 기포와 탈기(Degassing) 문제</h3>
+                    
+                    <div class="warning-box">
+                        <h3>🫧 특히 2µL 미만의 소량 주입에서 기포는 RSD 악화의 주범</h3>
+                        <p>인젝션 밸브가 Bypass 위치로 전환될 때 샘플 루프 내 압력이 낮아지며 이동상에 녹아있던 가스가 <strong>미세 기포</strong>를 형성할 수 있습니다.</p>
+                    </div>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>고성능 진공 데가싸(Degasser) 사용</h4>
+                            <p>반드시 <span class="highlight">고성능 진공 데가싸</span>를 사용하고, 시료 자체도 주입 전 짧게 탈기하는 것이 권장됩니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>이동상 및 시료 탈기</h4>
+                            <p>이동상 제조 시 과도한 교반을 피하고, 가능하면 신선하게 준비한 용매를 사용하십시오. 오래된 용매는 공기 포화도가 높아져 기포 발생 위험이 증가합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">1.4 분석법(Method) 설정 최적화</h3>
+                    
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>Draw Speed(흡입 속도) 조절</h4>
+                            <p>기본값(200µL/min 또는 100µL/min)이 시료의 점도에 비해 너무 빠르면 시료 내부에 진공이 생기거나 기포가 형성되어 RSD가 높아집니다. <span class="highlight">소량 주입이나 점도가 있는 시료라면 속도를 10~50µL/min 정도로 낮추면 정밀도가 향상됩니다</span>.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>Needle Wash(플러시 포트) 활용</h4>
+                            <p>주입 전후에 <strong>Flush Port</strong>에서 니들 외부를 충분히 세척(최소 10초 이상)하여 니들 끝에 맺힌 잔여물이 시트나 샘플에 섞이지 않도록 해야 합니다.</p>
+                        </div>
+                    </div>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>시료 특성</th>
+                                <th>권장 Draw Speed</th>
+                                <th>기대 효과</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>저점도 / 일반 시료</td>
+                                <td>100~200 µL/min</td>
+                                <td>표준 정밀도</td>
+                            </tr>
+                            <tr>
+                                <td>소량 주입 (< 5 µL)</td>
+                                <td><strong>50~100 µL/min</strong></td>
+                                <td>재현성 개선</td>
+                            </tr>
+                            <tr>
+                                <td>고점도 시료</td>
+                                <td><strong style="color: #c53030;">10~50 µL/min</strong></td>
+                                <td>기포 방지 및 RSD↓</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">1.5 통합(Integration) 및 검출기 설정</h3>
+                    
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>신호 대 잡음비(S/N)</h4>
+                            <p>Area가 너무 작으면 베이스라인 노이즈의 영향으로 적분 시 시작점과 끝점이 흔들리게 됩니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>Peak Width</h4>
+                            <p>검출기의 Peak Width(Response Time) 설정이 너무 넓으면 피크 높이가 낮아지고 노이즈 필터링이 과하게 되어 소량 검체의 재현성이 떨어집니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-steps">
+                    <h3>✅ 지금 즉시 확인해야 할 사항</h3>
+                    <ol>
+                        <li><strong>Draw Speed</strong>를 평소보다 낮게 설정해 보십시오 (10~50 µL/min)</li>
+                        <li><strong>미터링 씰과 로터 씰</strong>의 마지막 교체 시기를 확인하고 마모되었다면 교체하십시오</li>
+                        <li>이동상과 시료의 <strong>탈기 상태</strong>를 다시 점검하십시오</li>
+                    </ol>
+                </div>
+
+                <div class="analogy-box">
+                    <span class="icon">💧</span>
+                    <strong>일상생활 비유</strong>
+                    <p style="margin-top: 12px; font-size: 17px; line-height: 1.8;">이는 마치 <strong>주사기로 아주 작은 물 한 방울(소량 주입)을 매번 똑같은 크기로 떨어뜨리려는 것</strong>과 같습니다. 주사기 고무(씰)가 헐겁거나, 누르는 속도(Draw Speed)가 너무 빠르거나, 안에 작은 공기(기포)가 차 있다면 물방울 크기를 일정하게 맞추기 매우 어려운 것과 같은 원리입니다.</p>
+                </div>
+            </div>
+
+            <!-- Section 2: Baseline -->
+            <div class="section" id="baseline">
+                <div class="section-header">
+                    <h2>📈 2. 베이스라인 흔들림 문제</h2>
+                    <p class="desc">신호 대 잡음비(S/N) 개선 방안</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🎯 문제 정의</h3>
+                    <p>피크 자체가 작을 때 베이스라인이 흔들려 보이는 현상은 <span class="highlight">신호 대 잡음비(S/N 비)가 낮기 때문</span>입니다. 피크의 높이가 베이스라인의 무작위적인 노이즈 수준과 비슷해지면, 적절한 피크 통합(Integration)이 어려워지고 재현성(RSD)이 급격히 나빠집니다.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">2.1 검출기 필터 설정 (Peak Width/Response Time)</h3>
+                    
+                    <p style="font-size: 17px; margin-bottom: 20px;">검출기의 <strong>Peak Width(또는 Response Time)</strong> 설정은 베이스라인 노이즈를 줄이는 가장 직접적인 방법입니다.</p>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>노이즈 감소 효과</h4>
+                            <p>Peak Width 값을 현재 설정보다 한 단계 높이면(예: 0.05 min → 0.1 min) 디지털 필터가 강화되어 <span class="highlight">베이스라인 노이즈를 약 1.4배 감소</span>시킬 수 있습니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>주의사항 (Over-filtering)</h4>
+                            <p>필터를 너무 과하게 걸면 노이즈는 사라지지만 <strong>피크의 높이도 함께 낮아져 분리능이 떨어질 수 있으므로</strong>, 분석 중인 피크 중 가장 좁은 피크의 폭에 맞춰 최적화해야 합니다.</p>
+                        </div>
+                    </div>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>피크 폭 (반치전폭)</th>
+                                <th>권장 Peak Width</th>
+                                <th>노이즈 감소 효과</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>> 0.1 min (넓은 피크)</td>
+                                <td>0.1 ~ 0.2 min</td>
+                                <td>고효율 필터링 가능</td>
+                            </tr>
+                            <tr>
+                                <td>0.05 ~ 0.1 min (일반)</td>
+                                <td><strong>0.05 ~ 0.1 min</strong></td>
+                                <td>최적 균형점</td>
+                            </tr>
+                            <tr>
+                                <td>< 0.05 min (좁은 피크)</td>
+                                <td><strong style="color: #c53030;">0.02 ~ 0.05 min</strong></td>
+                                <td>⚠️ 필터링 제한적</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">2.2 슬릿 폭(Slit Width) 및 대역폭(Bandwidth) 최적화</h3>
+                    
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>슬릿 폭 확대</h4>
+                            <p>슬릿 폭을 넓게(예: 8nm 또는 16nm) 설정하면 플로우 셀을 통과하는 빛의 양이 많아져 <span class="highlight">신호 감도가 좋아지고 베이스라인 노이즈가 낮아집니다</span>.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>대역폭(BW) 확대</h4>
+                            <p>샘플 대역폭을 넓히면(예: 4nm → 30nm) 여러 파장의 신호를 평균화하여 <span class="highlight">노이즈를 약 2.5배까지 줄일 수 있습니다</span>.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>참조 파장(Reference Wavelength)</h4>
+                            <p>참조 파장을 설정하면 온도 변화나 이동상 굴절률 변화로 인한 <span class="highlight">베이스라인 드리프트와 출렁임(Wander)을 효과적으로 상쇄</span>할 수 있습니다.</p>
+                        </div>
+                    </div>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>파라미터</th>
+                                <th>표준 설정</th>
+                                <th>노이즈 감소 설정</th>
+                                <th>개선 효과</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Slit Width</strong></td>
+                                <td>4 nm</td>
+                                <td><strong>8 ~ 16 nm</strong></td>
+                                <td>신호 강도 ↑</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bandwidth</strong></td>
+                                <td>4 nm</td>
+                                <td><strong>10 ~ 30 nm</strong></td>
+                                <td>노이즈 2.5배↓</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Reference</strong></td>
+                                <td>Off</td>
+                                <td><strong>적절한 파장 선택</strong></td>
+                                <td>Drift 상쇄</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">2.3 하드웨어 구성의 차이 확인</h3>
+                    
+                    <div class="warning-box">
+                        <h3>🔍 잘 되는 기기와 안 되는 기기의 사부피 차이</h3>
+                        <p>잘 되는 기기와 안 되는 기기의 <strong>사부피(Extra-column Volume)</strong> 차이가 피크 높이에 결정적인 영향을 미칠 수 있습니다.</p>
+                    </div>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>캐필러리 내경</h4>
+                            <p>피크가 작아 보이는 기기가 초록색(0.17mm) 배관을 쓰고 있다면, <span class="highlight">빨간색(0.12mm) 배관</span>으로 교체하는 것만으로도 피크가 옆으로 퍼지는 것을 막아 피크 높이를 키울 수 있습니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>플로우 셀(Flow Cell) 사양</h4>
+                            <p>DAD 검출기의 경우, 장착된 셀의 <strong>광로 길이(Path Length)</strong>를 확인하십시오. 60mm Max-Light 셀을 사용하는 기기는 표준 10mm 셀보다 <span class="highlight">신호를 3~5배 더 크게</span> 만들어 S/N 비를 획기적으로 개선합니다.</p>
+                        </div>
+                    </div>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>플로우 셀 타입</th>
+                                <th>광로 길이</th>
+                                <th>신호 강도</th>
+                                <th>적용</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Standard Cell</td>
+                                <td>10 mm</td>
+                                <td>1x (기준)</td>
+                                <td>일반 분석</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Max-Light Cell</strong></td>
+                                <td><strong>60 mm</strong></td>
+                                <td><strong style="color: #c53030;">3~5x</strong></td>
+                                <td>미량 분석</td>
+                            </tr>
+                            <tr>
+                                <td>Micro Cell</td>
+                                <td>6 mm</td>
+                                <td>0.6x</td>
+                                <td>Fast LC</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">2.4 시스템 안정화 및 환경 요인</h3>
+                    
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>워밍업 시간</h4>
+                            <p>검출기 램프를 켠 후 최소 <span class="highlight">1~2시간 이상의 충분한 평형 시간</span>이 필요합니다. 온도 제어 시스템이 안정화되지 않으면 미세한 온도 변화가 베이스라인 흔들림으로 나타납니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>탈기(Degassing)</h4>
+                            <p>이동상에 녹아있는 미세 기포는 노이즈의 주범입니다. 고성능 데가싸(Degasser)가 정상 작동하는지, 잘 되는 기기와 비교해 보십시오.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analogy-box">
+                    <span class="icon">⭐</span>
+                    <strong>일상생활 비유</strong>
+                    <p style="margin-top: 12px; font-size: 17px; line-height: 1.8;">이는 <strong>밤하늘의 아주 희미한 별(낮은 Area의 피크)을 관찰하는 것</strong>과 같습니다. 주변 조명(노이즈)이 너무 밝거나 망원경의 초점(캐필러리 사부피)이 흐릿하면 별이 보이지 않습니다. 이때 주변을 어둡게 하거나(필터/설정 최적화) 렌즈 크기를 키우면(슬릿 폭 확대/긴 광로 셀 사용) 별이 뚜렷하게 보이는 것과 같은 원리입니다.</p>
+                </div>
+            </div>
+
+            <!-- Section 3: RT RSD -->
+            <div class="section" id="rt-rsd">
+                <div class="section-header">
+                    <h2>⏱️ 3. RT RSD 불량</h2>
+                    <p class="desc">리텐션 타임 재현성 문제</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🎯 문제 정의</h3>
+                    <p>Agilent 1260 Infinity 시스템에서 <strong>RT RSD(리텐션 타임 재현성)가 불량한 것</strong>은 이동상이 컬럼을 통과하는 <span class="highlight">유량(Flow rate)이 일정하지 않음</span>을 의미합니다.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">3.1 펌프 내부의 리크(Leak) 점검</h3>
+                    
+                    <div class="warning-box">
+                        <h3>🚨 가장 흔한 원인</h3>
+                        <p>펌프 부품이 마모되거나 오염되어 미세하게 역류가 발생하면 설정한 유량보다 적게 흐르게 되어 RT가 밀리거나 흔들립니다.</p>
+                    </div>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>인렛/아웃렛 밸브(Inlet/Outlet Valve)</h4>
+                            <p>밸브 내부에 기포가 차거나 염(Salt)이 석출되어 꽉 닫히지 않으면 유량이 불규칙해집니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>피스톤 씰(Piston Seal) 마모</h4>
+                            <p>씰이 마모되면 피스톤 뒤쪽으로 액이 새어 유량 손실이 발생하며, 이는 불안정한 RT의 직접적인 원인이 됩니다.</p>
+                        </div>
+                    </div>
+
+                    <div class="action-steps">
+                        <h3>🔧 Agilent Lab Advisor를 통한 점검</h3>
+                        <ol>
+                            <li>Lab Advisor 소프트웨어를 실행합니다</li>
+                            <li><strong>'Pump Leak Rate Test'</strong>를 선택하여 실행</li>
+                            <li>각 피스톤별 리크량을 확인 (정상 범위: <span class="highlight">3 µL/min 미만</span>)</li>
+                            <li>기준 초과 시 해당 부품 즉시 교체</li>
+                        </ol>
+                    </div>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>리크량 (µL/min)</th>
+                                <th>판정</th>
+                                <th>조치</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>< 3</td>
+                                <td><strong style="color: #48bb78;">정상</strong></td>
+                                <td>계속 사용 가능</td>
+                            </tr>
+                            <tr>
+                                <td>3 ~ 5</td>
+                                <td><strong style="color: #ed8936;">주의</strong></td>
+                                <td>교체 준비</td>
+                            </tr>
+                            <tr>
+                                <td>> 5</td>
+                                <td><strong style="color: #c53030;">불량</strong></td>
+                                <td>즉시 교체 필요</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">3.2 탈기(Degassing) 및 공기 유입 확인</h3>
+                    
+                    <div class="info-box">
+                        <h3>🫧 기포의 영향</h3>
+                        <p>유로 내부에 기포가 있으면 피스톤이 액체 대신 공기를 압축하게 되어 유량이 불연속적으로 변합니다.</p>
+                    </div>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>용매 필터(Solvent Filter) 점검</h4>
+                            <p>필터가 오염되거나 곰팡이(Algae)가 생겨 막히면 펌프가 용매를 제대로 빨아들이지 못해 압력 변동과 유량 불안정을 유발합니다. <span class="highlight">권장 교체 주기: 3~6개월마다</span></p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>데가싸(Degasser) 성능</h4>
+                            <p>용매가 충분히 탈기되지 않으면 펌프 헤드 내에서 기포가 발생합니다. 데가싸 멤브레인 교체 이력을 확인하십시오 (통상 2년 주기).</p>
+                        </div>
+                    </div>
+
+                    <div class="action-steps">
+                        <h3>🔧 시스템 플러싱(Purge) 프로토콜</h3>
+                        <ol>
+                            <li>퍼지 밸브(Purge Valve)를 개방합니다</li>
+                            <li><strong>3~5 mL/min의 빠른 유량</strong>으로 설정</li>
+                            <li>각 용매 라인별로 최소 <span class="highlight">20 mL 이상 플러싱</span></li>
+                            <li>기포가 완전히 제거될 때까지 지속</li>
+                            <li>퍼지 밸브를 닫고 정상 유량으로 복귀</li>
+                            <li>압력 안정화 확인 (변동 < 5 bar)</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">3.3 용매 설정 및 환경 요인</h3>
+                    
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>압축률 보정(Compressibility Compensation)</h4>
+                            <p>사용하는 용매에 맞는 압축률 값을 설정하지 않으면 압력 맥동(Ripple)이 커져 유량이 미세하게 흔들립니다. 수계 용매는 A 채널에, 유기 용매는 B 채널에 연결하는 것이 기본 권장 사항입니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>온도 제어(TCC)</h4>
+                            <p>리텐션 타임은 온도에 매우 민감합니다. <strong>컬럼 컴파트먼트(TCC)</strong>를 사용하여 온도를 일정하게 유지하고 있는지 확인하십시오. 분석 전 시스템이 열적으로 평형을 이룰 수 있도록 <span class="highlight">최소 30분 이상의 안정화 시간</span>이 필요합니다.</p>
+                        </div>
+                    </div>
+
+                    <table class="spec-table">
+                        <thead>
+                            <tr>
+                                <th>용매</th>
+                                <th>압축률 (×10⁻⁶/bar)</th>
+                                <th>채널 권장</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>물 (Water)</td>
+                                <td>46</td>
+                                <td><strong>A 채널</strong></td>
+                            </tr>
+                            <tr>
+                                <td>아세토니트릴 (ACN)</td>
+                                <td>110</td>
+                                <td><strong>B 채널</strong></td>
+                            </tr>
+                            <tr>
+                                <td>메탄올 (MeOH)</td>
+                                <td>120</td>
+                                <td><strong>B 채널</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">3.4 시퀀스 설정 확인</h3>
+                    
+                    <div class="warning-box">
+                        <h3>⚠️ 오버랩 주입(Overlapped Injection) 주의</h3>
+                        <p>이 기능을 사용할 때, 시퀀스의 <strong>마지막 시퀀스</strong>는 밸브 전환 방식이 달라져 이전 런(Run)들과 RT가 미세하게 차이 날 수 있습니다.</p>
+                    </div>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>해결 방안</h4>
+                            <p>시퀀스 마지막에 <span class="highlight">'Blank' 주입을 하나 추가</span>하여 분석 데이터의 일관성을 유지하십시오. Blank는 결과 처리에서 제외하고, 실제 분석 샘플들은 모두 동일한 조건으로 주입됩니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="success-box">
+                    <h3>📊 RT RSD 평가 기준</h3>
+                    <p>일반적인 의약품 품질관리에서 <strong>RT RSD는 0.5% 이하</strong>를 목표로 합니다. 잘 최적화된 시스템에서는 <span class="highlight">0.1~0.2% 수준</span>도 달성 가능합니다.</p>
+                </div>
+
+                <div class="analogy-box">
+                    <span class="icon">🏭</span>
+                    <strong>일상생활 비유</strong>
+                    <p style="margin-top: 12px; font-size: 17px; line-height: 1.8;">RT 재현성은 <strong>'컨베이어 벨트의 속도'</strong>와 같습니다. 벨트가 낡아서 헛돌거나(리크), 벨트 사이에 이물질이 끼거나(필터 막힘), 모터 설정이 불안정하면(압축률 오류) 물건이 도착 지점에 도달하는 시간이 매번 달라지는 것과 같은 원리입니다.</p>
+                </div>
+            </div>
+
+            <!-- Section 4: Resolution -->
+            <div class="section" id="resolution">
+                <div class="section-header">
+                    <h2>📊 4. 분리도(Resolution, Rs) 부족</h2>
+                    <p class="desc">피크 분리 성능 개선</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🎯 문제 정의</h3>
+                    <p>Agilent 1260 Infinity II 시스템에서 <strong>피크 분리도(Resolution, Rs)가 부적합하게 나타나는 것</strong>은 크게 <span class="highlight">분리 파라미터(선택성, 효율, 유지) 설정 문제</span>와 <span class="highlight">시스템 내부의 피크 확산(Dispersion)</span> 때문입니다.</p>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">4.1 분리도의 핵심 3요소 점검 (N, α, k)</h3>
+                    
+                    <p style="font-size: 17px; margin-bottom: 20px;">분리도는 단수(Plate count, N), 선택성(Selectivity, α), retention factor(k)에 의해 결정됩니다.</p>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>선택성(α) 최적화 - 가장 큰 영향</h4>
+                            <p>분리도에 가장 큰 영향을 미치는 요인입니다. 피크가 겹친다면 고정상(C18, Phenyl 등), 이동상 조성, 또는 <strong>온도</strong>를 변경하여 성분 간의 선택적 차이를 극대화해야 합니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>컬럼 효율(N) 증대</h4>
+                            <p>더 긴 컬럼을 사용하거나 <span class="highlight">1.8 µm와 같은 작은 입자(Smaller particle)</span>를 사용하면 단수가 높아져 피크가 날카로워지고 분리도가 향상됩니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>그래디언트 기울기 조절</h4>
+                            <p>그래디언트 분석 시 <strong>더 완만한 기울기(Shallower gradient)</strong>를 설정하면(가이드라인: 분당 2~5% 변화) 분리도를 높일 수 있습니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">4.2 시스템 사부피 및 피크 확산 방지</h3>
+                    
+                    <div class="info-box">
+                        <h3>📏 Extra-column Volume 최소화</h3>
+                        <p>컬럼에서 분리된 성분이 검출기에 도달하기 전까지 경로에서 피크가 퍼지는 현상을 최소화해야 합니다.</p>
+                    </div>
+
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>캐필러리 내경 및 길이</h4>
+                            <p>컬럼 전후의 연결 배관은 가능한 짧고 얇은 것을 사용해야 합니다. <span class="highlight">0.12 mm 내경(빨간색 코딩)</span> 배관을 사용하여 사부피를 최소화하십시오.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>피팅 연결 상태</h4>
+                            <p>제로 데드 볼륨(Zero-dead-volume) 피팅이 제대로 밀착되지 않으면 밴드 넓어짐이 발생하여 분리도가 급격히 떨어집니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>플로우 셀(Flow Cell) 선택</h4>
+                            <p>검출기의 셀 부피는 피크 부피의 약 <strong>1/3</strong> 정도가 적당하며, 과도하게 큰 셀은 피크 확산을 유발합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">4.3 주입 조건 및 검출기 설정 최적화</h3>
+                    
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>주입 용매 및 부피</h4>
+                            <p>샘플 용매가 이동상의 시작 조건보다 강하면(More eluotropic) 피크가 일그러지고 분리도가 소실됩니다. <span class="highlight">이동상보다 약하거나 동일한 용매</span>에 샘플을 녹여야 하며, 컬럼 크기에 맞춰 주입 부피를 줄여야 합니다.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>데이터 수집 속도(Data Rate)</h4>
+                            <p>초고속 분석(Fast LC) 시 데이터 속도가 너무 낮으면 피크 폭이 넓어져 분리능이 파괴됩니다. <span class="highlight">80 Hz 또는 120 Hz</span>와 같은 고속 설정을 통해 좁은 피크를 정확하게 기록해야 합니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">4.4 하드웨어 및 환경 요인</h3>
+                    
+                    <div class="check-list">
+                        <div class="check-item">
+                            <h4>마찰열(Frictional Heating) 관리</h4>
+                            <p>높은 유량과 압력에서 분석 시 컬럼 내부에서 열이 발생하여 분리 성능을 저하시킬 수 있습니다. 이때는 컬럼 온도를 몇 도 낮추어 보정하십시오.</p>
+                        </div>
+
+                        <div class="check-item">
+                            <h4>시스템 안정화</h4>
+                            <p>램프를 켠 후 최소 <span class="highlight">1~2시간 이상 워밍업</span>하여 광학계와 온도가 안정된 상태에서 분석을 시작해야 노이즈와 드리프트에 의한 분리도 왜곡을 막을 수 있습니다.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-steps">
+                    <h3>✅ 분리도 개선을 위한 즉시 조치</h3>
+                    <ol>
+                        <li><strong>더 좁은 내경의 빨간색 배관(0.12mm)</strong> 사용 확인</li>
+                        <li><strong>주입 용매를 이동상보다 약하게 조절</strong></li>
+                        <li><strong>검출기 데이터 속도를 높이는 것</strong> (80 Hz 이상)</li>
+                        <li>선택성 개선: 이동상 조성, 온도, 컬럼 종류 변경 고려</li>
+                        <li>그래디언트 기울기를 더 완만하게 조절 (분당 2~5%)</li>
+                    </ol>
+                </div>
+
+                <div class="analogy-box">
+                    <span class="icon">📷</span>
+                    <strong>일상생활 비유</strong>
+                    <p style="margin-top: 12px; font-size: 17px; line-height: 1.8;">이는 마치 <strong>초점을 맞추지 않은 카메라로 두 명의 달리기 선수를 촬영하는 것</strong>과 같습니다. 렌즈(배관 내경)가 흐릿하거나 셔터 스피드(데이터 속도)가 느리면 두 선수가 한 사람처럼 겹쳐 보이듯, HPLC에서도 각 구성 요소의 초점을 정밀하게 맞추어야 선명한 분리 결과를 얻을 수 있습니다.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            <p>HPLC 시스템 트러블슈팅 가이드 | JW Life Sciences 품질관리팀</p>
+            <p style="margin-top: 10px; font-size: 14px;">Agilent 1260 Infinity II 시스템 기준</p>
+        </div>
+    </div>
+
+    <a href="#toc" class="back-to-top">↑</a>
+
+    <script>
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Show/hide back to top button
+        const backToTop = document.querySelector('.back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'flex';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
